@@ -13,3 +13,10 @@ const generateRefreshToken = (id) => {
 const verifyToken = (token) => {
     return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 }
+
+
+module.exports = {
+    generateAccessToken , 
+    generateRefreshToken , 
+    verifyToken
+}

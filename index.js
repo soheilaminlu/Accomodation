@@ -16,6 +16,10 @@ dbConfig()
 //ROUTES CONFIG
 app.use('/users' , authRoutes);
 
+app.get('/' , (req , res) => {
+    res.json("hey iits just test")
+})
+
 app.listen(port, () => {
     console.log(`Server Connected on ${port}`);
 })
