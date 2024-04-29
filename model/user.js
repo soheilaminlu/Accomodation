@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 3,
         maxlength: 100
+    } , 
+    role: {
+        type:String , 
+        enum: ['admin' , 'user' , 'viewer'] , 
+        default: 'viewer'
     }
 });
 

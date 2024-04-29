@@ -1,9 +1,10 @@
 const Joi = require('joi');
 const bcrypt = require('bcrypt')
-const {User , validateUser} = require('../model/user')
+const {User , validateUser} = require('../model/user');
+const {generateAccessToken , generateRefreshToken} = require('../configs/jwt');
 
 module.exports.signupController = async (req, res) => {
-    const {username , password , email} = req.body
+    const {username , password , email , role} = req.body
     console.log(req.body)
    const {error} =  await validateUser(req.body);
    if(error) {
@@ -19,12 +20,16 @@ module.exports.signupController = async (req, res) => {
    const user = await User.create({
     username:username , 
     password:hashhingPass , 
-    email:email
+    email:email , 
+    role:role
    })
   if(!user) {
     return res.status(400).json({message:"Failed to signing Up"})
   }
-  return res.status(200).json({message:"User Created Successfuly" , user:user})
+  const accessToken = generateAccessToken(user._id , user.email , user.role)
+  const refreshToken = generateRefreshToken(user._id);
+  console.log(accessToken)
+  return res.status(200).json({message:"User Created Successfuly" , user:user , accessToken:accessToken , refreshToken:refreshToken})
 };
 
 module.exports.loginController = async (req, res) => {
