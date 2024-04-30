@@ -6,12 +6,11 @@ return jwt.sign({id , email , role} , process.env.ACCESS_TOKEN_SECRET , {expires
 
 
 const generateRefreshToken = (id) => {
-   return jwt.sign({id} , process.env.REFRESH_TOKEN_SECRET)
+   return jwt.sign({id} , process.env.REFRESH_TOKEN_SECRET , {expiresIn:'1d'})
 }
 
 
 module.exports = {
     generateAccessToken , 
-    generateRefreshToken , 
-    verifyToken
+    generateRefreshToken
 }

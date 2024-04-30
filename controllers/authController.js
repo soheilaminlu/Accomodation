@@ -1,7 +1,6 @@
 const Joi = require('joi');
 const bcrypt = require('bcrypt')
 const {User , validateUser} = require('../model/user');
-const {generateAccessToken , generateRefreshToken} = require('../configs/jwt');
 
 module.exports.signupController = async (req, res) => {
     const {username , password , email , role} = req.body
@@ -26,11 +25,7 @@ module.exports.signupController = async (req, res) => {
   if(!user) {
     return res.status(400).json({message:"Failed to signing Up"})
   }
-  const accessToken = await generateAccessToken(user._id , user.email , user.role)
-  const refreshToken = await generateRefreshToken(user._id);
-  res.cookie('jwt' , accessToken  , {httpOnly:true})
-  console.log(accessToken)
-  console.log(refreshToken)
+ 
   await user.save()
   return res.status(200).json({message:"User Created Successfuly" , user:user , accessToken:accessToken , refreshToken:refreshToken})
 };
@@ -45,13 +40,17 @@ module.exports.loginController = async (req, res) => {
     if(!passwordMatch) {
         return res.status(400).json({message:"Invalid Password"})
     }
-    const accessToken = await generateAccessToken(user._id , user.email , user.role)
-  const refreshToken = await generateRefreshToken(user._id);
-  res.cookie('jwt' , accessToken  , {httpOnly:true})
     return res.status(200).json({message:"Login Successfuly" , accessToken , refreshToken})
 };
 
-module.exports.logoutController = async (req, res) => {
+module.exports.logoutController = async (req, res , next) => {
+    try {
+        res.cookie('jwt', '', { maxAge: 1 });
+        res.status(200).json("GoodBye")
+        next();
+      } catch (err) {    
+        res.status(400).json({ message: "Logout Error", error: err.message });
+      }
     // Implement logout logic here
 };
 
