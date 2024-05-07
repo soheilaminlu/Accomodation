@@ -12,7 +12,6 @@ const {
 
 router.post('/signup' , signupController);
 router.post('/login' , loginController);
-router.get('/logout' , logoutController);
 router.post('/otp' , otpController);
 router.post('/refresh-token' , refreshTokenController)
 router.delete('/logout' , logOutController)

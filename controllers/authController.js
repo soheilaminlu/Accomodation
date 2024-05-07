@@ -4,6 +4,7 @@ const {User , validateUser} = require('../model/user');
 const {generateTokens} = require('../configs/jwt');
 const UserToken = require('../model/userToken');
  const  {verifyRefreshToken}  = require('../configs/verifyRefreshToken')
+ const jwt = require('jsonwebtoken')
 
 module.exports.signupController = async (req, res) => {
     const {username , password , email , role} = req.body
@@ -28,9 +29,8 @@ module.exports.signupController = async (req, res) => {
   if(!user) {
     return res.status(400).json({message:"Failed to signing Up"})
   }
-  const {accessToken , refreshToken} = await generateTokens(user)
   await user.save()
-  return res.status(200).json({message:"User Created Successfuly" , user:user , accessToken:accessToken , refreshToken:refreshToken})
+  return res.status(200).json({message:"User Created Successfuly" , user:user})
 };
 
 module.exports.loginController = async (req, res) => {
@@ -53,15 +53,25 @@ module.exports.otpController = async (req, res) => {
 
 module.exports.refreshTokenController = async (req , res) => {
   const {refreshToken} = req.body;
-  const verifyRefreshToken = await verifyRefreshToken(refreshToken)
-  if(!verifyRefreshToken) {
-    return res.status(400).json({message:"Failed to verifying"})
+  const refreshTokenResult = await verifyRefreshToken(refreshToken);
+  if(!refreshToken) {
+    return res.status(400).json({message:"Not Valid refreshToken"})
   }
-  return res.status(200).json({message:"Access Token generated successfuly"});
+  const {tokenDetails} = refreshTokenResult;
+  const payload = {userId:tokenDetails._id , role:tokenDetails.role};
+  const newAccessToken = await jwt.sign(
+    payload , 
+   process.env.ACCESS_TOKEN_SECRET ,
+   {expiresIn:'15m'}
+  )
+  if(!newAccessToken) {
+    return res.status(400).json({message:"Failed to Create new Access Token"})
+  }
+  return res.status(200).json({message:"Accesstoken Created Successfuly" , accessToken:newAccessToken})
 }
 
 
-module.exports.logoutController = async (req ,res) => {
+module.exports.logOutController = async (req ,res) => {
   try {
     const {refreshToken} = req.body;
 

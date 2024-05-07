@@ -1,33 +1,23 @@
 const UserToken = require('../model/userToken');
 const jwt = require('jsonwebtoken');
 
-
-const verifyRefreshToken = (refreshToken) => {
-   const secretKey = process.env.REFRESH_TOKEN_SECRET
-   return new Promise((resolve , reject) => {
-    UserToken.findOne({token:refreshToken} ,(error , doc) => {
-     if(!doc) {
-        return reject({error:true , message:"Invalid Token"})
-     }
-     jwt.verify(refreshToken , secretKey , (error , decode) => {
-        if(error) {
-            return reject({error:true , message:"Invalid Token"})
+const verifyRefreshToken = async (refreshToken) => {
+    const secretKey = process.env.REFRESH_TOKEN_SECRET;
+    try {
+        const doc = await UserToken.findOne({ token: refreshToken });
+        if (!doc) {
+            throw { error: true, message: "Invalid Token" };
         }
-        const newAccessToken = jwt.sign(
-            decode,
-            process.env.ACCESS_TOKEN_SECRET,
-            {expiresIn:'15m'}
-        );
-        resolve({
-            error:false , 
-            decode , 
-            newAccessToken , 
-            message:"Valid refresh token "
-        })
-     })
-    })
-   }) 
-}
+        const decode = jwt.verify(refreshToken, secretKey);
+        return {
+            error: false,
+            tokenDetails: decode // Passing decoded token details
+        };
+    } catch (error) {
+        throw { error: true, message: "Invalid Token" };
+    }
+};
+
 
 module.exports = {
     verifyRefreshToken

@@ -20,7 +20,7 @@ try {
     const existingUserToken = await UserToken.findOne({userId:user._id})
 
     if (existingUserToken) {
-        await existingUserToken.remove();
+        await UserToken.deleteOne({ userId: user._id });
     }
 
     await new UserToken({userId:user._id , token:refreshToken}).save();
