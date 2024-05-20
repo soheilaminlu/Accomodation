@@ -4,15 +4,15 @@ const router = express.Router();
 const {
     signupController ,
     loginController , 
-    logoutController , 
-    otpController , 
+    logOutController , 
+    otpVerify , 
     refreshTokenController , 
     logOutController
 } = require('../controllers/authController')
 
 router.post('/signup' , signupController);
 router.post('/login' , loginController);
-router.post('/otp' , otpController);
+router.post('/verify-otp' , otpVerify);
 router.post('/refresh-token' , refreshTokenController)
 router.delete('/logout' , logOutController)
 
