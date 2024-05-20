@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 const cors = require('cors')
 const authRoutes = require('./routes/authRoutes')
 const accomodationRoute = require('./routes/accomodation')
+const reviewsRoute = require('./routes/review');
 
 //CONFIG CORS
 app.use(cors({
@@ -22,7 +23,8 @@ dbConfig()
 
 //ROUTES CONFIG
 app.use('/users' , authRoutes);
-app.use('/acco' , accomodationRoute)
+app.use('/acco' , accomodationRoute);
+app.use('/reviews' , reviewsRoute);
 
 app.get('/' , (req , res) => {
     res.json("hey iits just test")

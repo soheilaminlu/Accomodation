@@ -6,12 +6,15 @@ const {
     createAcco ,
     editAccoById ,
     deleteAccoById
-} = require('../controllers/accomodationController')
+} = require('../controllers/accomodationController');
+
+const {isAuth} = require('../middlewares/isAuth');
+const { isOwner } = require('../middlewares/isOwner');
 
 router.get('/' , getAcco );
-router.post('/' , createAcco);
-router.patch('/:id' , editAccoById);
-router.delete('/:id' , deleteAccoById);
+router.post('/' , isAuth,createAcco);
+router.patch('/:id' ,isAuth , isOwner, editAccoById);
+router.delete('/:id' , isAuth  , isOwner,deleteAccoById);
 
 
 
