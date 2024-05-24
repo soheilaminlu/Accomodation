@@ -64,3 +64,21 @@ if(!deleteAccomodation) {
 }
 return res.status({message:"Deleted Successfuly" , deleteAccomodation:deleteAccomodation})
 }
+
+
+module.exports.reserveAccomodation = () => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({message:"Internal Server"})
+    }
+}
+
+
+module.exports.cancelReserving = () => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({message:"Internal Server"})
+    }
+}

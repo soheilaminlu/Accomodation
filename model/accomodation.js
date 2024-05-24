@@ -13,7 +13,8 @@ roomNuber:{
     type:String ,
     enum:['1' , '2' , '3' , '4'] , 
     required:true
-}
+} ,
+isReserved:{type:Boolean , default:false}
 });
 
 

@@ -5,8 +5,10 @@ const {
     getAcco ,
     createAcco ,
     editAccoById ,
-    deleteAccoById
-} = require('../controllers/accomodationController');
+    deleteAccoById ,
+    reserveAccomodation , 
+    cancelReserving
+} = require('../controllers/userController');
 
 const {isAuth} = require('../middlewares/isAuth');
 const { isOwner } = require('../middlewares/isOwner');
@@ -15,6 +17,10 @@ router.get('/' , getAcco );
 router.post('/' , isAuth,createAcco);
 router.patch('/:id' ,isAuth , isOwner, editAccoById);
 router.delete('/:id' , isAuth  , isOwner,deleteAccoById);
+
+router.post('/reserve/:id' , isAuth , reserveAccomodation);
+router.post('/cancel/:id' , isAuth , cancelReserving);
+
 
 
 

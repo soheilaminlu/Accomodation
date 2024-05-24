@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const cors = require('cors')
 const authRoutes = require('./routes/authRoutes');
-const accomodationRoute = require('./routes/accomodation');
+const usersRoute = require('./routes/userRoutes');
 const reviewsRoute = require('./routes/review');
 const adminRoutes = require('./routes/adminRoutes');
 
@@ -25,7 +25,7 @@ dbConfig()
 
 //ROUTES CONFIG
 app.use('/users' , authRoutes);
-app.use('/acco' , accomodationRoute);
+app.use('/acco' , usersRoute);
 app.use('/reviews' , reviewsRoute);
 app.use('/admin' , adminRoutes)
 
