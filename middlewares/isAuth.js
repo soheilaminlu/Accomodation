@@ -19,7 +19,7 @@ const isAuth = async (req , res, next) => {
             req.user = user;
             next()
         }
-        return res.status(401).json({ message: 'Email dismatch' });
+        return res.status(401).json({ message: 'Email mismatch' });
         }
         return res.status(401).json({ message: 'Failed to decode' });
     } catch (error) {

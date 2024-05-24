@@ -17,11 +17,14 @@ return res.status(200).json(accomodation)
 
 module.exports.createAcco = async () => {
 try {
-    const {name , cost , description} = req.body;
+    const owner = req.user
+    const {name , cost , description , roomNumber} = req.body;
     const createPlace = await Accomodation.create({
         name:name , 
         cost: cost , 
-        description: description
+        description: description,
+        owner ,
+        roomNumber
     })
     
     if(!createPlace) {

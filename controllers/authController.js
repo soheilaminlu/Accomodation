@@ -9,7 +9,7 @@ const { otpGenerate , otpVerify } = require('../configs/otp');
 
 module.exports.signupController = async (req, res) => {
   try {
-    const {username , password , email , role} = req.body
+    const {username , password , email} = req.body
     console.log(req.body)
    const {error} =  await validateUser(req.body);
    if(error) {
@@ -26,8 +26,7 @@ module.exports.signupController = async (req, res) => {
    const user = await User.create({
     username:username , 
     password:hashhingPass , 
-    email:email , 
-    role:role
+    email:email ,
    })
   if(!user) {
     return res.status(400).json({message:"Failed to signing Up"})

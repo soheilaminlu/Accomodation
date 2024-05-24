@@ -5,9 +5,11 @@ const { dbConfig } = require('./configs/db');
 const app = express();
 const port = process.env.PORT || 3000;
 const cors = require('cors')
-const authRoutes = require('./routes/authRoutes')
-const accomodationRoute = require('./routes/accomodation')
+const authRoutes = require('./routes/authRoutes');
+const accomodationRoute = require('./routes/accomodation');
 const reviewsRoute = require('./routes/review');
+const adminRoutes = require('./routes/adminRoutes');
+
 
 //CONFIG CORS
 app.use(cors({
@@ -25,6 +27,7 @@ dbConfig()
 app.use('/users' , authRoutes);
 app.use('/acco' , accomodationRoute);
 app.use('/reviews' , reviewsRoute);
+app.use('/admin' , adminRoutes)
 
 app.get('/' , (req , res) => {
     res.json("hey iits just test")

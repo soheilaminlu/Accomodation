@@ -1,5 +1,4 @@
 const Accommodation = require('../model/accomodation');
-const review = require('../model/review');
 const Review = require('../model/review');
 
 module.exports.getAllReviews = async () => {
@@ -28,6 +27,9 @@ module.exports.postReview = async () => {
             description,
             rate
         });
+        if(!newReview) {
+            return res.status(400).json({message:"Failed to create"})
+        }
         const savedReview = await newReview.save();
         if(!savedReview) {
             return res.status(400).json({message:"Failed to Add new review"})
@@ -35,26 +37,34 @@ module.exports.postReview = async () => {
         const accomodation = Accommodation.findByIdAndUpdate(place , {
             $push:{reviews:newReview}
         })
-        if(accomodation) {
-        return res.status(200).json({message:"add review Successfuly" , 
-        review:savedReview , 
-        accomodation:accomodation})
+        if (!accomodation) {
+            return res.status(400).json({ message: "Failed to modify Accommodation" });
         }
-        return res.status(400).json({message:"cat modify Accomodation"}) 
+
+        // Calculate the new average rate for the accommodation
+        const reviews = await Review.find({ place: place });
+        const totalReviews = reviews.length;
+        let totalRate = 0;
+        reviews.forEach(review => {
+            totalRate += review.rate;
+        });
+        const averageRate = totalRate / totalReviews;
+
+        // Update the accommodation's averageRate field
+        accomodation.averageRate = averageRate;
+        await accomodation.save();
+
+        return res.status(200).json({
+            message: "Review added successfully",
+            review: savedReview,
+            accomodation: accomodation
+        });
     } catch (error) {
        return res.status(500).json({message:"Internal Server Error"})
     }
 
 }
 
-module.exports.editReviewByOwner = async () => {
-
-}
-
-
-module.exports.deleteReviewByAdmin = async () => {
-
-}
 
 
 

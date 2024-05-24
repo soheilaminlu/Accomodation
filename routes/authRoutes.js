@@ -6,8 +6,7 @@ const {
     loginController , 
     logOutController , 
     otpVerify , 
-    refreshTokenController , 
-    logOutController
+    refreshTokenController 
 } = require('../controllers/authController')
 
 router.post('/signup' , signupController);
