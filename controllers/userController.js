@@ -1,10 +1,13 @@
 
+const accomodation = require('../model/accomodation');
 const Accomodation = require('../model/accomodation');
+const Reservation = require('../model/reservation');
+const {User} = require('../model/user')
 
 
 module.exports.getAcco = async (req , res) => {
     try {
-        const accomodation = await Accomodation.find({})
+        const accomodation = await Accomodation.find({isReserved:false})
 if(accomodation.length == 0){
     return res.status(404).json({message:"Not found Any place"})
 }
@@ -66,18 +69,60 @@ return res.status({message:"Deleted Successfuly" , deleteAccomodation:deleteAcco
 }
 
 
-module.exports.reserveAccomodation = () => {
+module.exports.reserveAccomodation = async () => {
     try {
-        
+        const {id} = req.params;
+        const user = req.user
+        const {checkIn , checkOut} = req.body
+        const accomodation = await Accomodation.findById(id);
+        if(!accomodation) {
+            return res.status(404).json({message:"Not Found Accomodation"})
+          }
+          const reservation =  Reservation.create({
+            user:user ,
+            accomodaition:accomodation ,
+            checkIn:checkIn ,
+            checkOut:checkOut
+          })
+          if(!reservation) {
+            return res.status(400).json({message:"Failed to create Reservation"})
+          }
+          await reservation.save()
+          return res.status(200).json({message:"Accomodation reserved successfuly" , 
+          reservation:reservation , 
+          accomodationReserved:accomodation})
+         
     } catch (error) {
         return res.status(500).json({message:"Internal Server"})
     }
 }
 
 
-module.exports.cancelReserving = () => {
+module.exports.cancelReserving = async() => {
     try {
-        
+        const {id} = req.params;
+        const {userId , accomodationId} = req.body
+        const  reservation = await Reservation.findById(id);
+
+        if(!reservation) {
+            return res.status(404).json({message:"Not Found Accomodation"})
+          }
+          const user = await User.findById(userId)
+          if(!user) {
+            return res.status(404).json({message:"Not Found User"})
+          } 
+          const accomodaition = await Accomodation.findById(accomodationId)
+          if(!accomodaition) {
+            return res.status(404).json({message:"Not Found Accomodation"})
+          }
+          if(user._id === reservation.user && accomodation._id === reservation.accomodation) {
+            if(accomodaition.isReserved = true) {
+                accomodaition.isReserved = false
+            }
+            return res.status(200).json({message:"Reservation canceled Successfuly"})
+          } 
+
+          
     } catch (error) {
         return res.status(500).json({message:"Internal Server"})
     }
