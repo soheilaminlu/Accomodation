@@ -16,9 +16,8 @@ const isAuth = async (req , res, next) => {
         if(!decode) {
            return res.status(400).json({message:"Failed to decode"})
         }
-        console.log(decode)
-        console.log(decode.userId)
-        const user = User.findById(decode.userId);
+       
+        const user = await User.findById(decode.userId);
         if(!user) {
             return res.status(404).json({message:"User not Found"})
              }

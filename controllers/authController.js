@@ -87,7 +87,7 @@ module.exports.refreshTokenController = async (req , res) => {
     const newAccessToken = await jwt.sign(
       payload , 
      process.env.ACCESS_TOKEN_SECRET ,
-     {expiresIn:'15m'}
+     {expiresIn:'40m'}
     )
     if(!newAccessToken) {
       return res.status(400).json({message:"Failed to Create new Access Token"})

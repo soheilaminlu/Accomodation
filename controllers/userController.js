@@ -20,7 +20,7 @@ return res.status(200).json(accomodation)
 
 module.exports.createAcco = async (req ,res ) => {
 try {
-    const {owner} = req.user._id
+    const owner = req.user._id
     const {name , cost , description , roomNumber} = req.body;
     const createPlace = await Accomodation.create({
         name:name , 
@@ -33,42 +33,45 @@ try {
     if(!createPlace) {
         return res.status(400).json({message:"Failed to Create Place"})
     }
-    return res.status(200).json({message:"Place created Successfuly" , accomodation:createPlace , owner:createPlace.owner});
+    return res.status(200).json({message:"Place created Successfuly" , accomodation:createPlace});
 } catch (error) {
     return res.status(500).json({message:"Internal Server" , error:error.message})
 }
 }
 
-module.exports.editAccoById = async () => {
+module.exports.editAccoById = async (req , res) => {
     try {
-        const {name , cost , description} = req.body;
+        const updates = req.body;
         const {id} = req.params;
       const accomodation = await Accomodation.findById(id);
       if(!accomodation) {
         return res.status(404).json({message:"Not Found Accomodation"})
       }
-       accomodation.name = name , 
-       accomodation.cost = cost ,
-       accomodation.description = description
+      for (let key in updates) {
+        if (accomodation[key] !== undefined) {
+          accomodation[key] = updates[key];
+        }
+      }
       await accomodation.save()
       return res.status(200).json({message:"Place Updated Successfuly"})
      } catch (error) {
-       return res.status(500).json({message:"Internal Server"})
+       return res.status(500).json({message:"Internal Server" , error:error.message})
     }
 
 }
 
-module.exports.deleteAccoById = async () => {
-const {id} =req.params;
+module.exports.deleteAccoById = async (req , res ) => {
+const {id} = req.params;
 const deleteAccomodation = await Accomodation.findByIdAndDelete(id);
+console.log('heeeeey')
 if(!deleteAccomodation) {
     return res.status(400).json({message:"Failed to Delete Your Accomodation"})
 }
-return res.status({message:"Deleted Successfuly" , deleteAccomodation:deleteAccomodation})
+return res.status(200).json({message:"Deleted Successfuly" , deleteAccomodation:deleteAccomodation})
 }
 
 
-module.exports.reserveAccomodation = async () => {
+module.exports.reserveAccomodation = async (req , res ) => {
     try {
         const {id} = req.params;
         const user = req.user
@@ -76,6 +79,9 @@ module.exports.reserveAccomodation = async () => {
         const accomodation = await Accomodation.findById(id);
         if(!accomodation) {
             return res.status(404).json({message:"Not Found Accomodation"})
+          }
+          if(req.user._id.toString() === accomodation.owner.toString()) {
+            return res.status(400).json({message:"owner cant reserve its Place"})
           }
           const reservation =  Reservation.create({
             user:user ,
@@ -97,7 +103,7 @@ module.exports.reserveAccomodation = async () => {
 }
 
 
-module.exports.cancelReserving = async() => {
+module.exports.cancelReserving = async(req , res) => {
     try {
         const {id} = req.params;
         const {userId , accomodationId} = req.body
