@@ -18,9 +18,8 @@ return res.status(200).json(accomodation)
 
 }
 
-module.exports.createAcco = async () => {
+module.exports.createAcco = async (req ,res ) => {
 try {
-    const owner = req.user
     const {name , cost , description , roomNumber} = req.body;
     const createPlace = await Accomodation.create({
         name:name , 
@@ -33,10 +32,9 @@ try {
     if(!createPlace) {
         return res.status(400).json({message:"Failed to Create Place"})
     }
-    createPlace.owner = req.user
     return res.status(200).json({message:"Place created Successfuly" , accomodation:createPlace});
 } catch (error) {
-    return res.status(500).json({message:"Internal Server"})
+    return res.status(500).json({message:"Internal Server" , error:error.message})
 }
 }
 

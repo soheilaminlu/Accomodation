@@ -55,7 +55,7 @@ module.exports.loginController = async (req, res) => {
     const {accessToken , refreshToken} = await generateTokens(user)
     return res.status(200).json({message:"Login Successfuly" , accessToken , refreshToken})
   } catch (error) {
-    return res.status(500).json({message:"Internal Server Error"})
+    return res.status(500).json({message:"Internal Server Error" , error:error.message})
   }
    
 };

@@ -1,6 +1,7 @@
 // adminController.js
 
 const Accomodation = require("../model/accomodation");
+const Reservation = require("../model/reservation");
 const Review = require("../model/review");
 const { User } = require("../model/user");
 
@@ -125,3 +126,34 @@ module.exports.deleteReview = async (req, res) => {
        return res.status(500).send('Internal Server Error');
     }
 };
+
+
+module.exports.getAllReserves = async(req , res) => {
+const reservations = await Reservation.find({});
+if(reservations.length === 0) {
+    return res.status(404).json({message:"Not Found Any Reservation"})
+}
+return res.status(200).json({reservations:reservations})
+}
+
+
+module.exports.cancelReserve = async (req , res ) => {
+    try {
+        const { reserveId } = req.params;
+    
+        // پیدا کردن رزرو و حذف آن
+        const reservation = await Reservation.findByIdAndDelete(reserveId);
+    
+        if (!reservation) {
+          return res.status(404).send({ message: "Reservation not found" });
+        }
+    
+        // به‌روزرسانی فیلد isReserved اقامتگاه مربوطه
+        await Accomodation.findByIdAndUpdate(reservation.accommodation, { isReserved: false });
+    
+       return res.status(200).send({ message: "Reservation cancelled and accommodation updated" });
+      } catch (error) {
+        return res.status(500).send({ message: "An error occurred", error });
+      }
+
+}

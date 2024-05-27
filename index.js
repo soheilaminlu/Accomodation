@@ -24,7 +24,7 @@ app.use(express.json());
 dbConfig()
 
 //ROUTES CONFIG
-app.use('/users' , authRoutes);
+app.use('/auth' , authRoutes);
 app.use('/acco' , usersRoute);
 app.use('/reviews' , reviewsRoute);
 app.use('/admin' , adminRoutes)

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../model/user');
+const  {User}  = require('../model/user');
 
 
 const isAuth = async (req , res, next) => {
@@ -13,15 +13,18 @@ const isAuth = async (req , res, next) => {
 
     try {
         const decode = jwt.verify(token , process.env.ACCESS_TOKEN_SECRET)
-        if(decode) {
-         const user = await User.findById(decode.id)
-        if(decode.email && decode.email == user.email) {
-            req.user = user;
-            next()
+        if(!decode) {
+           return res.status(400).json({message:"Failed to decode"})
         }
-        return res.status(401).json({ message: 'Email mismatch' });
-        }
-        return res.status(401).json({ message: 'Failed to decode' });
+        console.log(decode)
+        console.log(decode.userId)
+        const user = User.findById(decode.userId);
+        if(!user) {
+            return res.status(404).json({message:"User not Found"})
+             }
+            req.user = user
+        return next();   
+    
     } catch (error) {
         console.log(error)
     }
