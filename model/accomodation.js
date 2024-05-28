@@ -7,7 +7,7 @@ name : {type:String , required:true} ,
 description:String , 
 cost:{type:Number , required:true} , 
 owner:{type:mongoose.Types.ObjectId , ref:'User'} , 
-reviews: {type:mongoose.Types.ObjectId , ref:'Review'} ,
+reviews: [{ type: mongoose.Types.ObjectId, ref: 'Review' }], // ,
 avrageRate:{type:Number} ,
 roomNumber:{
     type:String ,

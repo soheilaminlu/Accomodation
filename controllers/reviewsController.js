@@ -1,7 +1,7 @@
 const Accommodation = require('../model/accomodation');
 const Review = require('../model/review');
 
-module.exports.getAllReviews = async () => {
+module.exports.getAllReviews = async (req , res) => {
 const {accomodatoinId} = req.body
 const reviews = await Accommodation.findById(accomodatoinId).populate({
     path:'reviews' ,
@@ -18,12 +18,13 @@ return res.status(200).json({message:"Reviews Loaded Successfuly" , reviews:revi
 }
 
 
-module.exports.postReview = async () => {
+module.exports.postReview = async (req , res) => {
     try {
-        const {owner  , description , place , rate} = req.body;
-        const newReview = new Review({
+        const owner = req.user._id
+        const  {description , accomodation , rate} = req.body;
+        const newReview = await new Review({
             owner,
-            place,
+            accomodation,
             description,
             rate
         });
@@ -34,15 +35,18 @@ module.exports.postReview = async () => {
         if(!savedReview) {
             return res.status(400).json({message:"Failed to Add new review"})
         }
-        const accomodation = Accommodation.findByIdAndUpdate(place , {
-            $push:{reviews:newReview}
-        })
-        if (!accomodation) {
+        const updatedAccommodation = await Accommodation.findByIdAndUpdate(
+            accomodation,
+            { $push: { reviews: savedReview._id } },
+            { new: true }
+        );
+
+        if (!updatedAccommodation) {
             return res.status(400).json({ message: "Failed to modify Accommodation" });
         }
 
         // Calculate the new average rate for the accommodation
-        const reviews = await Review.find({ place: place });
+        const reviews = await Review.find({ accomodation: updatedAccommodation });
         const totalReviews = reviews.length;
         let totalRate = 0;
         reviews.forEach(review => {
@@ -51,16 +55,16 @@ module.exports.postReview = async () => {
         const averageRate = totalRate / totalReviews;
 
         // Update the accommodation's averageRate field
-        accomodation.averageRate = averageRate;
-        await accomodation.save();
+        updatedAccommodation.avrageRate = averageRate;
+        await  updatedAccommodation.save();
 
         return res.status(200).json({
             message: "Review added successfully",
-            review: savedReview,
-            accomodation: accomodation
+            review: {savedreview:savedReview.description , savedreviewOwner:savedReview.owner},
+            accomodation: updatedAccommodation
         });
     } catch (error) {
-       return res.status(500).json({message:"Internal Server Error"})
+       return res.status(500).json({message:"Internal Server Error" , error:error.message})
     }
 
 }

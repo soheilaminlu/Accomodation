@@ -10,7 +10,7 @@ try {
     const accessToken = jwt.sign(
      payload , 
     process.env.ACCESS_TOKEN_SECRET , 
-     {expiresIn:'40m'}
+     {expiresIn:'60m'}
     );
     const refreshToken = jwt.sign (
     payload , 

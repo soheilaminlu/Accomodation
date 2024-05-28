@@ -9,7 +9,7 @@ const { otpGenerate , otpVerify } = require('../configs/otp');
 
 module.exports.signupController = async (req, res) => {
   try {
-    const {username , password , email} = req.body
+    const {username , password , email  , role} = req.body
     console.log(req.body)
    const {error} =  await validateUser(req.body);
    if(error) {
@@ -27,6 +27,7 @@ module.exports.signupController = async (req, res) => {
     username:username , 
     password:hashhingPass , 
     email:email ,
+    role:role
    })
   if(!user) {
     return res.status(400).json({message:"Failed to signing Up"})
@@ -87,7 +88,7 @@ module.exports.refreshTokenController = async (req , res) => {
     const newAccessToken = await jwt.sign(
       payload , 
      process.env.ACCESS_TOKEN_SECRET ,
-     {expiresIn:'40m'}
+     {expiresIn:'60m'}
     )
     if(!newAccessToken) {
       return res.status(400).json({message:"Failed to Create new Access Token"})

@@ -2,6 +2,7 @@
 const accomodation = require('../model/accomodation');
 const Accomodation = require('../model/accomodation');
 const Reservation = require('../model/reservation');
+const Review =  require('../model/review')
 const {User} = require('../model/user')
 
 
@@ -117,12 +118,22 @@ module.exports.cancelReserving = async(req , res) => {
           if(!accomodaition) {
             return res.status(404).json({message:"Not Found Accomodation"})
           }
-          await reservation.remove();
+          await Reservation.findByIdAndDelete(reservationId);
            accomodaition.isReserved = false
            await accomodaition.save()
-            return res.status(200).json({message:"Reservation canceled Successfuly"})
+            return res.status(200).json({message:"Reservation canceled Successfuly" , accomodationState:accomodation})
           }       
     catch (error) {
-        return res.status(500).json({message:"Internal Server"})
+        return res.status(500).json({message:"Internal Server" , error:error.message})
     }
+  }
+
+  module.exports.getAccomodationReviews = async(req , res) => {
+  const {id} = req.params;
+  const accomodation = await Accomodation.findById(id);
+  if(!accomodation) {
+    return res.status(404).json({message:"Not Found Accomodation"})
+  }
+  const accomodationReviews = await Review.find({accomodation , isVaild:true});
+   return res.status(200).json({message:"Reviews Loaded Successfuly" , reviews:accomodationReviews})
   }

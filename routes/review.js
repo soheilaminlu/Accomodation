@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const {isAuth} = require('../middlewares/isAuth')
 
 const {
     getAllReviews ,
@@ -9,7 +9,7 @@ const {
 
 
 router.get('/' , getAllReviews);
-router.post('/' , postReview);
+router.post('/' , isAuth ,postReview);
 
 
 

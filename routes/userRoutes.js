@@ -17,6 +17,7 @@ router.get('/' , getAcco );
 router.post('/' , isAuth,createAcco);
 router.patch('/:id' ,isAuth , isOwner, editAccoById);
 router.delete('/:id' , isAuth  , isOwner,deleteAccoById);
+router.get('/reviews/:id' , isAuth , getAccomodationReviews)
 
 router.post('/reserve/:id' , isAuth , reserveAccomodation);
 router.post('/cancel/:reservationId' , isAuth , cancelReserving);

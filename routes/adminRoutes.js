@@ -18,7 +18,7 @@ router.delete('/user/:id' , isAuth ,isAdmin, deleteUser);
 router.get('/review/:id' , isAuth , isAdmin , getReviewById);
 router.get('/:accomodationId/reviews' , isAuth ,isAdmin , getAccomodationReviews);
 router.patch('/validate-review/:id' , isAuth ,isAdmin , validationReview);
-router.delete('/delte-review/:id' , isAuth ,isAdmin, deleteReview);
+router.delete('/delete-review/:id' , isAuth ,isAdmin, deleteReview);
 
 
 router.get('/getAllReserve' , isAuth , isAdmin , getAllReserves);
