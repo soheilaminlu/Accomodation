@@ -19,7 +19,7 @@ router.patch('/:id' ,isAuth , isOwner, editAccoById);
 router.delete('/:id' , isAuth  , isOwner,deleteAccoById);
 
 router.post('/reserve/:id' , isAuth , reserveAccomodation);
-router.post('/cancel/:id' , isAuth , cancelReserving);
+router.post('/cancel/:reservationId' , isAuth , cancelReserving);
 
 
 
