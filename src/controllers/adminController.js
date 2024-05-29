@@ -160,3 +160,15 @@ module.exports.cancelReserve = async (req , res ) => {
       }
 
 }
+
+module.exports.getSpecialDates = (req ,res) => {
+
+}
+
+module.exports.createSpecialDates = (req , res) => {
+
+}
+
+module.exports.deleteSpecialDate = (req , res) => {
+
+}
