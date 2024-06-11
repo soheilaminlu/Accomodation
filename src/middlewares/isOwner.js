@@ -7,7 +7,8 @@ const accomodation = await Accomodation.findById(id);
 if (!accomodation) {
     return res.status(404).json({ message: "Accommodation not found" });
   }
-if(accomodation.owner.toString() === req.user._id.toString()) {
+  console.log(accomodation)
+if(accomodation.owner=== req.user._id.toString()) {
     console.log(req.user._id);
     console.log(accomodation.owner)
      return next();
