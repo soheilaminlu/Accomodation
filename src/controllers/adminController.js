@@ -6,6 +6,7 @@ const Review = require("../model/review");
 const { User } = require("../model/user");
 const {validateUser} = require('../model/user')
 const bcrypt = require('bcrypt')
+const SpecialDates = require('../model/specialDates')
 
 module.exports.createUser = async (req, res) => {
     try {
@@ -161,8 +162,12 @@ module.exports.cancelReserve = async (req , res ) => {
 
 }
 
-module.exports.getSpecialDates = (req ,res) => {
-
+module.exports.getSpecialDates = async (req ,res) => {
+const dates = await SpecialDates.find({})
+if(dates.length == 0) {
+    return res.status(404).json({message:"Not Found Any Special Dates"})
+}
+return res.status(200).json({message:"Special Dates Founded Successfuly"})
 }
 
 module.exports.createSpecialDates = (req , res) => {
